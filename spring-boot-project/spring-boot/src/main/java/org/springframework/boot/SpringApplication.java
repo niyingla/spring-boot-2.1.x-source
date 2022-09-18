@@ -333,15 +333,13 @@ public class SpringApplication {
 		listeners.starting();
 		try {
 			// 创建ApplicationArguments对象，封装了args参数
-			ApplicationArguments applicationArguments = new DefaultApplicationArguments(
-					args);
+			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
 			// 【2】准备环境变量，包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值，
 			// JNDI属性值，以及配置文件（比如application.properties）等，注意这些环境变量是有优先级的
 			// 》》》》》发射【ApplicationEnvironmentPreparedEvent】事件
 			// TODO 这里准备环境变量是不是加载所有application.properties等环境变量？跟Spring的加载环境变量有啥区别？是不是这里加载了Spring那边就不用再管了？自己在application.properties，外部参数等可以设置环境变量的地方上编辑多个环境变量看这里能否加载进来？？？
 			// TODO 自己想想加密的属性是如何扩展的？如何改造？
-			ConfigurableEnvironment environment = prepareEnvironment(listeners,
-					applicationArguments);
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
 			// 配置spring.beaninfo.ignore属性，默认为true，即跳过搜索BeanInfo classes.
 			configureIgnoreBeanInfo(environment);
 			// 【3】控制台打印SpringBoot的bannner标志
@@ -362,8 +360,7 @@ public class SpringApplication {
 			// 5）从context容器中获取beanFactory，并向beanFactory中注册一些单例bean，比如applicationArguments，printedBanner
 			// 6）TODO 加载bean到application context，注意这里只是加载了部分bean比如mainApplication这个bean，大部分bean应该是在AbstractApplicationContext.refresh方法中被加载？这里留个疑问先
 			// 7）》》》》》发射【ApplicationPreparedEvent】事件，标志Context容器已经准备完成
-			prepareContext(context, environment, listeners, applicationArguments,
-					printedBanner);
+			prepareContext(context, environment, listeners, applicationArguments, printedBanner);
 
 			// 【7】刷新容器，这一步至关重要，以后会在分析Spring源码时详细分析，主要做了以下工作：
 			// 1）在context刷新前做一些准备工作，比如初始化一些属性设置，属性合法性校验和保存容器中的一些早期事件等；
@@ -516,8 +513,7 @@ public class SpringApplication {
 		Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
 		// 1) 根据SpringApplicationRunListener接口去spring.factories配置文件中加载其SPI扩展实现类
 		// 2) 构建一个SpringApplicationRunListeners对象并返回
-		return new SpringApplicationRunListeners(logger, getSpringFactoriesInstances(
-				SpringApplicationRunListener.class, types, this, args));
+		return new SpringApplicationRunListeners(logger, getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args));
 	}
 
 	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
