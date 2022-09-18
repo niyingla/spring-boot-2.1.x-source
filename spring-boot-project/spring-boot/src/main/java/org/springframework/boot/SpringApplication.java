@@ -281,8 +281,7 @@ public class SpringApplication {
 		// 【3】给webApplicationType属性赋值，根据classpath中存在哪种类型的类来确定是哪种应用类型
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
 		// 【4】给initializers属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationContextInitializer接口的实现类并赋值给initializers属性
-		setInitializers((Collection) getSpringFactoriesInstances(
-				ApplicationContextInitializer.class));
+		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
 		// 【5】给listeners属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationListener接口的实现类并赋值给listeners属性
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
 		// 【6】给mainApplicationClass属性赋值，即这里要推断哪个类调用了main函数，然后再赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
@@ -433,13 +432,13 @@ public class SpringApplication {
 
 
 
-	private ConfigurableEnvironment prepareEnvironment(
-			SpringApplicationRunListeners listeners,
-			ApplicationArguments applicationArguments) {
+	private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments) {
 		// Create and configure the environment
 		ConfigurableEnvironment environment = getOrCreateEnvironment();
-		configureEnvironment(environment, applicationArguments.getSourceArgs()); // 这里为之前创建的environment配置一些命令行参数形式的环境变量
-		listeners.environmentPrepared(environment); // 利用事件监听机制来为environment环境变量配置application.properties中的环境变量或@{}形式的环境变量
+		// 这里为之前创建的environment配置一些命令行参数形式的环境变量
+		configureEnvironment(environment, applicationArguments.getSourceArgs());
+		// 利用事件监听机制来为environment环境变量配置application.properties中的环境变量或@{}形式的环境变量
+		listeners.environmentPrepared(environment);
 		bindToSpringApplication(environment); // TODO 将environment绑定在SpringApplication，后续用来干嘛呢？
 		if (!this.isCustomEnvironment) {
 			// TODO 这里什么情况下需要进行转换？
@@ -520,17 +519,14 @@ public class SpringApplication {
 		return getSpringFactoriesInstances(type, new Class<?>[] {});
 	}
 
-	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type,
-			Class<?>[] parameterTypes, Object... args) {
+	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
 		// 【1】获得类加载器
 		ClassLoader classLoader = getClassLoader();
 		// Use names and ensure unique to protect against duplicates
 		// 【2】将接口类型和类加载器作为参数传入loadFactoryNames方法，从spring.factories配置文件中进行加载接口实现类
-		Set<String> names = new LinkedHashSet<>(
-				SpringFactoriesLoader.loadFactoryNames(type, classLoader));
+		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
 		// 【3】实例化从spring.factories中加载的接口实现类
-		List<T> instances = createSpringFactoriesInstances(type, parameterTypes,
-				classLoader, args, names);
+		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
 		// 【4】进行排序
 		AnnotationAwareOrderComparator.sort(instances);
 		// 【5】返回加载并实例化好的接口实现类
@@ -551,8 +547,7 @@ public class SpringApplication {
 				// 断言刚才加载的SPI扩展类是否属于SPI接口类型
 				Assert.isAssignable(type, instanceClass);
 				// 获得SPI扩展类的构造器
-				Constructor<?> constructor = instanceClass
-						.getDeclaredConstructor(parameterTypes);
+				Constructor<?> constructor = instanceClass.getDeclaredConstructor(parameterTypes);
 				// 实例化SPI扩展类
 				T instance = (T) BeanUtils.instantiateClass(constructor, args);
 				// 添加进instances集合
@@ -595,10 +590,8 @@ public class SpringApplication {
 	protected void configureEnvironment(ConfigurableEnvironment environment,
 			String[] args) {
 		if (this.addConversionService) {
-			ConversionService conversionService = ApplicationConversionService
-					.getSharedInstance();
-			environment.setConversionService(
-					(ConfigurableConversionService) conversionService);
+			ConversionService conversionService = ApplicationConversionService.getSharedInstance();
+			environment.setConversionService((ConfigurableConversionService) conversionService);
 		}
 		configurePropertySources(environment, args);
 		configureProfiles(environment, args);
