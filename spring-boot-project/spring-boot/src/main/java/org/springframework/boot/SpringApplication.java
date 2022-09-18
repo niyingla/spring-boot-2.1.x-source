@@ -1375,8 +1375,7 @@ public class SpringApplication {
 	 * @return the running {@link ApplicationContext}
 	 */
 	// run方法是一个静态方法，用于启动SpringBoot
-	public static ConfigurableApplicationContext run(Class<?>[] primarySources,
-			String[] args) {
+	public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
 		// 构建一个SpringApplication对象，并调用其run方法来启动
 		return new SpringApplication(primarySources).run(args);
 	}
